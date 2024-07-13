@@ -31,7 +31,7 @@ export function CartProvider({ children }) {
 
   // Función para eliminar un producto del carrito
   const removeFromCart = product => {
-    // Filtra el carrito para excluir el producto a eliminar
+    // Filtra el carrito para excluir el producto a eliminar con su id
     setCart(prevState => prevState.filter(item=> item.id !== product.id))
   }
 
