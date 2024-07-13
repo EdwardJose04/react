@@ -1,0 +1,65 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex-shrink: 0;
+  background-color: #f8f9fa;
+  color: #333;
+  padding: 20px 0;
+  text-align: center;
+  border-top: 1px solid #e7e7e7;
+}
+
+.footer h4 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.footer h5 {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666;
+}
+
+.footer span {
+  color: #007bff;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .footer h4 {
+    font-size: 16px;
+  }
+
+  .footer h5 {
+    font-size: 12px;
+  }
+}
+
+/* Animación opcional para el símbolo de React */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footer h4:hover span::after {
+  content: ' ⚛️';
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}

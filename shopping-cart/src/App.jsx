@@ -1,31 +1,27 @@
-// En App.jsx
+import { products as initialProducts } from './mocks/products.json'
+import { Products } from './componentes/Products.jsx'
+import { Header } from './componentes/Header.jsx'
+import { Footer } from './componentes/Footer.jsx'
+import { useFilters } from './hooks/useFilters.js'
+import { Cart } from './componentes/Cart.jsx'
+import { CartProvider } from './context/cart.jsx'
+import { IS_DEVELOPMENT } from './config.js'
 
-import React, { useState } from 'react';
-import { products } from './mocks/products.json';
-import { Products } from './componentes/Products.jsx';
-import Header from './componentes/Header.jsx'; // Importa el componente Header sin llaves
+function App () {
+  const { filterProducts } = useFilters()
 
-function App() {
-  const [filters, setFilters] = useState({ category: 'all', minPrice: 0 });
-
-  const filterProducts = (products) => {
-    return products.filter(product => {
-      return (
-        (filters.minPrice <= product.price) &&
-        (filters.category === 'all' || product.category === filters.category)
-      );
-    });
-  }
-
-  const filteredProducts = filterProducts(products);
+  const filteredProducts = filterProducts(initialProducts)
 
   return (
     <>
-      <Header changeFilters={setFilters}/>
-      <h1 className='text-center'>Shopping Cart</h1>
+    <CartProvider>
+      <Header />
+      <Cart />
       <Products products={filteredProducts} />
+      {IS_DEVELOPMENT && <Footer />}
+    </CartProvider>
     </>
-  );
+  )
 }
 
-export default App;
+export default App
