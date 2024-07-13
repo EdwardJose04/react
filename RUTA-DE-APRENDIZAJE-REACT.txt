@@ -1,0 +1,9 @@
+1. Aprende React Desde Cero - Curso de React Con Proyectos (8hrs)
+   https://www.youtube.com/watch?v=6Jfk8ic3KVk&t=26099s
+
+2. Tienda y Carrito con React + Estado Global con useContext + Manejo de estado con useReducer (2hrs)
+   https://www.youtube.com/watch?v=B9tDYAZZxcE&t=2270s
+
+3. React useContext, Explicado de manera sencilla y detallada (15min)
+   https://www.youtube.com/watch?v=MhaZPtj6zbU
+
