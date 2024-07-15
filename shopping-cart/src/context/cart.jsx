@@ -1,70 +1,86 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
-// Crea un contexto para el carrito
 export const CartContext = createContext()
 
 export function CartProvider({ children }) {
-  // Estado para almacenar los items del carrito
-  const [cart, setCart] = useState([]);
+  // Inicializa el carrito con datos del localStorage si existen
+  const [cart, setCart] = useState(() => {
+    const storedCart = localStorage.getItem('cart');
+    return storedCart ? JSON.parse(storedCart) : [];
+  });
 
-  // Función para añadir un producto al carrito
+  // Actualiza localStorage cada vez que el carrito cambia
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
   const addToCart = product => {
-    // Busca si el producto ya está en el carrito
-    const productInCartIndex = cart.findIndex(item => item.id === product.id)
-
-    if (productInCartIndex >= 0) {
-      // Si el producto ya está en el carrito, aumenta su cantidad
-      const newCart = structuredClone(cart)  // Crea una copia profunda del carrito
-      newCart[productInCartIndex].quantity += 1
-      setCart(newCart)
-    } else {
-      // Si el producto no está en el carrito, lo añade
-      setCart(prevState => ([
-        ...prevState,
-        {
-          ...product,
-          quantity: 1
-        }
-      ]))
-    }
-  }
-
-  // Función para eliminar un producto del carrito
-  const removeFromCart = product => {
-    // Filtra el carrito para excluir el producto a eliminar con su id
-    setCart(prevState => prevState.filter(item=> item.id !== product.id))
-  }
-
-  // Función para reducir la cantidad de un producto en el carrito
-  const reduceQuantity = product => {
-    // Busca el índice del producto en el carrito
-    const productInCartIndex = cart.findIndex(item => item.id === product.id)
-    if (productInCartIndex >= 0) {
-      const newCart = structuredClone(cart)
-      if (newCart[productInCartIndex].quantity > 1) {
-        // Si la cantidad es mayor que 1, la reduce
-        newCart[productInCartIndex].quantity -= 1
-        setCart(newCart)
+    setCart(prevCart => {
+      const productInCartIndex = prevCart.findIndex(item => item.id === product.id)
+      if (productInCartIndex >= 0) {
+        const newCart = structuredClone(prevCart)
+        newCart[productInCartIndex].quantity += 1
+        return newCart
       } else {
-        // Si la cantidad es 1, elimina el producto del carrito
-        removeFromCart(product)
+        return [
+          ...prevCart,
+          {
+            ...product,
+            quantity: 1
+          }
+        ]
       }
-    }
+    })
   }
 
-  // Función para vaciar el carrito
+  const removeFromCart = product => {
+    setCart(prevCart => prevCart.filter(item => item.id !== product.id))
+  }
+
+  const reduceQuantity = product => {
+    setCart(prevCart => {
+      const productInCartIndex = prevCart.findIndex(item => item.id === product.id)
+      if (productInCartIndex >= 0) {
+        const newCart = structuredClone(prevCart)
+        if (newCart[productInCartIndex].quantity > 1) {
+          newCart[productInCartIndex].quantity -= 1
+          return newCart
+        } else {
+          return prevCart.filter(item => item.id !== product.id)
+        }
+      }
+      return prevCart
+    })
+  }
+
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => {
+      return total + (parseFloat(item.price) * item.quantity);
+    }, 0);
+  };
+
+  const formatPrice = (price) => {
+    return parseFloat(price).toLocaleString();
+  };
+
+  const getTotalItems = () => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
   const clearCart = () => {
     setCart([])
   }
 
-  // Provee el contexto con las funciones y el estado del carrito
   return (
     <CartContext.Provider value={{
       cart,
       addToCart,
       clearCart,
       removeFromCart,
-      reduceQuantity
+      reduceQuantity,
+      formatPrice,
+      calculateTotal,
+      getTotalItems
     }}>
       {children}
     </CartContext.Provider>

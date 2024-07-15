@@ -35,6 +35,9 @@ export function Filters() {
               <option value="laptops">Portátiles</option>
               <option value="home-decoration">Decoración</option>
               <option value="smartphones">Celulares</option>
+              <option value="fragrances">Lociones</option>
+              <option value="skincare">Skincare</option>
+              <option value="groceries">Golosinas</option>
             </select>
           </div>
         </div>

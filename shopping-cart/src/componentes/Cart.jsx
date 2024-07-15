@@ -28,40 +28,54 @@ function CartItem ({ thumbnail, price, title, quantity, addToCart, removeFromCar
 }
 
 export function Cart () {
-  // Genera un ID único para el checkbox del carrito
   const cartCheckboxId = useId()
-
-  // Extrae las funciones y el estado del carrito del hook useCart
-  const { cart, clearCart, addToCart, removeFromCart, reduceQuantity } = useCart()
+  const { cart, clearCart, addToCart, removeFromCart, reduceQuantity, formatPrice, calculateTotal, getTotalItems} = useCart()
 
   return (
     <>
       <label className='cart-button' htmlFor={cartCheckboxId}>
         <CartIcon />
+        {getTotalItems() > 0 && (
+          <div className='cart-badge'>{getTotalItems()}</div>
+        )}
       </label>
+
       <input id={cartCheckboxId} type='checkbox' hidden />
 
       <aside className='cart'>
-        <h3>Tu Carrito</h3>
-        <ul className="cart-items">
-          {/* Mapea cada producto en el carrito a un componente CartItem */}
-          {cart.map(product => (
-            <CartItem
-              key={product.id}
-              // Usa las funciones extraídas del hook useCart
-              addToCart={() => addToCart(product)}
-              removeFromCart={() => removeFromCart(product)}
-              reduceQuantity={() => reduceQuantity(product)}
-              {...product}
-            />
-          ))}
-        </ul>
+        {/* Si el carrito esta vacio mostrará esto */}
+        {cart.length === 0 ? (
+        <>
+        <h3 className='text-center pt-5'>Tu carrito esta vacio</h3>
+          <img className='img-fluid'
+          src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png"
+          alt="Carrito Vacio" 
+          />
 
-        {/* Usa la función clearCart extraída del hook useCart */}
-        <button className="clear-cart-button" onClick={clearCart}>
-          <ClearCartIcon />
-          Vaciar Carrito
-        </button>
+        </>
+          
+          // Si la logitud es mayor a 0 entonces mostrara esto
+        ) : (
+          <>
+          <h3>Tu Carrito</h3>
+            <span><strong>Total:</strong> ${formatPrice(calculateTotal())}</span>
+            <ul className="cart-items">
+              {cart.map(product => (
+                <CartItem
+                  key={product.id}
+                  addToCart={() => addToCart(product)}
+                  removeFromCart={() => removeFromCart(product)}
+                  reduceQuantity={() => reduceQuantity(product)}
+                  {...product}
+                />
+              ))}
+            </ul>
+            <button className="clear-cart-button" onClick={clearCart}>
+              <ClearCartIcon />
+              Vaciar Carrito
+            </button>
+          </>
+        )}
       </aside>
     </>
   )
